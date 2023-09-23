@@ -22,6 +22,8 @@ struct stClient
 };
 stClient currentClient;
 void showATMMainMenueScreen();
+void showNormalWithdrawScreen();
+void login();
 void printLoginScreenHeader() {
     cout << "_______________________\n";
     cout << "   Login Screen\n";
@@ -152,6 +154,12 @@ void saveCurrentClientToFile(stClient currentClient) {
     saveAllClientsToFile(vClients);
     
 }
+void goBacktoNormalWithdrawScreen() {
+    cout << "\n\nPress any Key to continue....\n";
+    system("pause>0");
+    system("cls");
+    showNormalWithdrawScreen();
+}
 void withDrawTheAmount(int ammount) {
     char answer = 'n';
     if (checkIfClientCanWithDraw(ammount)) {
@@ -173,7 +181,6 @@ eWithdrawChoice readWithdrawChoice() {
     cin >> choice;
     return eWithdrawChoice(choice);
 }
-
 void performeQuickWithdraw(eWithdrawChoice withdrawChoice) {
     switch (withdrawChoice)
     {
@@ -211,7 +218,6 @@ void performeQuickWithdraw(eWithdrawChoice withdrawChoice) {
         break;
     case Exit:
         goBackToMainMenueScreen();
-        goBackToMainMenueScreen();
         break;
     default:
         break;
@@ -221,6 +227,57 @@ void showQuickWithdrawScreen() {
     printQuickWithdrawScreenHeader();
     cout <<"Your balance is : "<< currentClientBalance() << endl;
     performeQuickWithdraw(readWithdrawChoice());
+}
+void printNormalWithdrawScreenHeader() {
+    cout << "=============================================";
+    cout << "\n          Normal Withdraw Screen";
+    cout << "\n=============================================\n\n";
+}
+void performeNormalWithdraw() {
+    int amount = 0;
+    do {
+        cout << "Enter an amount multiple of 5's ? ";
+        cin >> amount;
+    } while (amount % 5 != 0);
+    withDrawTheAmount(amount);
+}
+void showNormalWithdrawScreen() {
+    printNormalWithdrawScreenHeader();
+    performeNormalWithdraw();
+}
+void printDepositHeader() {
+    cout << "=============================================";
+    cout << "\n              Deposit Screen";
+    cout << "\n=============================================\n\n";
+}
+void performeDeposit() {
+    int amount = 0;
+    char answer = 'n';
+    cout << "Enter a positive Deposit Amount? ";
+    cin >> amount;
+    cout << "\n\nAre you sure you want to performe this transaction? y/n? ";
+    cin >> answer;
+    if (toupper(answer) == 'Y') {
+        currentClient.balance += amount;
+        saveCurrentClientToFile(currentClient);
+        cout << "Done Succfully.new Balance is: " << currentClient.balance;
+    }
+}
+void showDepositScreen() {
+    printDepositHeader();
+    performeDeposit();
+}
+void printCheckbalanceScreenHeader() {
+    cout << "=============================================";
+    cout << "\n           Check Balance Screen";
+    cout << "\n=============================================\n\n";
+}
+void performeCheckBalance() {
+    cout << "\nYou balance is " << currentClient.balance << "\n";
+}
+void showCheckBalanceScreen() {
+    printCheckbalanceScreenHeader();
+    performeCheckBalance();
 }
 void performeClientChoice(eClientChoices clientChoice) {
     vector<stClient> vClients = LoadClientsDataFromFile(clientFile);
@@ -233,22 +290,22 @@ void performeClientChoice(eClientChoices clientChoice) {
         break;
     case NormalWithdraw:
         system("cls");
-        //showNormalWithdrawScreen();
+        showNormalWithdrawScreen();
         goBackToMainMenueScreen();
         break;
     case Deposit:
         system("cls");
-       // showDepositScreen();
+        showDepositScreen();
         goBackToMainMenueScreen();
         break;
     case CheckBalance:
         system("cls");
-      //  showCheckBalanceScreen();
+        showCheckBalanceScreen();
         goBackToMainMenueScreen();
         break;
     case Logout:
         system("cls");
-        goBackToMainMenueScreen();
+        login();
         break;
     default:
         break;
@@ -268,13 +325,10 @@ void login() {
         readClientAccountNumberAndPinCode(pinCode, accountNumber);
         loginFailed = !findClientByAccountNumberAndPinCode(pinCode, accountNumber, currentClient);
     } while (loginFailed);
+    showATMMainMenueScreen();
 
 }
-
-
 int main()
 {
-    vector<stClient> vClients = LoadClientsDataFromFile(clientFile);
-    currentClient = vClients[6];
-    showQuickWithdrawScreen();
+    login();
 }
