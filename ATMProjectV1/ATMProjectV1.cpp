@@ -176,9 +176,12 @@ void withDrawTheAmount(int ammount) {
     }
 }
 eWithdrawChoice readWithdrawChoice() {
-    short choice;
-    cout << "Choose what to withdraw from[1 to 8]? ";
-    cin >> choice;
+    short choice=0;
+    while (choice < 1 || choice > 9) {
+        cout << "Choose what to withdraw from[1 to 9]? ";
+        cin >> choice;
+    }
+    
     return eWithdrawChoice(choice);
 }
 void performeQuickWithdraw(eWithdrawChoice withdrawChoice) {
@@ -236,9 +239,10 @@ void printNormalWithdrawScreenHeader() {
 void performeNormalWithdraw() {
     int amount = 0;
     do {
-        cout << "Enter an amount multiple of 5's ? ";
+        cout << "Enter a positive amount and multiple of 5's ? ";
         cin >> amount;
-    } while (amount % 5 != 0);
+    } while (amount <= 0 || amount % 5 != 0);
+    
     withDrawTheAmount(amount);
 }
 void showNormalWithdrawScreen() {
